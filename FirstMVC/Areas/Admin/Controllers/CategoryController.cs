@@ -2,11 +2,14 @@
 using FirstMVC.DataAccess.Repository;
 using FirstMVC.DataAccess.Repository.IRepository;
 using FirstMVC.Models;
+using FirstMVC.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FirstMVC.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.Role_Admin)]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

@@ -1,14 +1,18 @@
 ﻿using FirstMVC.DataAccess.Repository.IRepository;
 using FirstMVC.Models;
 using FirstMVC.Models.ViewModels;
+using FirstMVC.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Routing.Constraints;
 using NuGet.ProjectModel;
+using System.Data;
 
 namespace FirstMVC.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.Role_Admin)]
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
