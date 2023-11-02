@@ -19,6 +19,7 @@ namespace FirstMVC.DataAccess.Repository
             _db = db;
             this._dbSet = _db.Set<T>();
             _db.Products.Include(u => u.Category);
+
         }
         public void Add(T entity)
         {
@@ -51,6 +52,7 @@ namespace FirstMVC.DataAccess.Repository
                    query = query.Include(includeProp);
                 }
             }
+            
             return query.ToList();
         }
 

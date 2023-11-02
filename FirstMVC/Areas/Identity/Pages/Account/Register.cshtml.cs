@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
+using FirstMVC.DataAccess.Repository;
 using FirstMVC.DataAccess.Repository.IRepository;
 using FirstMVC.Models;
 using FirstMVC.Utility;
@@ -35,8 +36,9 @@ namespace FirstMVC.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-
+        private readonly IUnitOfWork _unitOfWork;
         public RegisterModel(
+            IUnitOfWork unitOfWork,
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             RoleManager<IdentityRole> roleManager,
@@ -44,6 +46,7 @@ namespace FirstMVC.Areas.Identity.Pages.Account
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
+            _unitOfWork = unitOfWork;
             _userManager = userManager;
             _userStore = userStore;
             _roleManager = roleManager;
@@ -116,7 +119,9 @@ namespace FirstMVC.Areas.Identity.Pages.Account
             public string City { get; set; }
             public string State { get; set; }
             public string PostalCode { get; set; }
-
+            public int? CompanyId { get; set; }
+            [ValidateNever]
+            public IEnumerable<SelectListItem> CompanyList { get; set; }
         }
 
 
@@ -135,13 +140,12 @@ namespace FirstMVC.Areas.Identity.Pages.Account
                 {
                     Text = i,
                     Value = i
-                })
-                /*
+                }),
                 CompanyList = _unitOfWork.Company.GetAll().Select(i => new SelectListItem() 
                 {
                     Text = i.Name,
                     Value = i.Id.ToString()
-                })*/
+                })
             };
 
             ReturnUrl = returnUrl;
@@ -172,7 +176,10 @@ namespace FirstMVC.Areas.Identity.Pages.Account
                 user.State = Input.State;
                 user.PostalCode = Input.PostalCode;
                 user.StreetAddress = Input.StreetAddress;
-
+                if(Input.Role == SD.Role_Company)
+                {
+                    user.CompanyId = Input.CompanyId;
+                }
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
